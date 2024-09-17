@@ -1,0 +1,24 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+
+
+---
+
+<MainLayout title="Scadrial">
+  <h1>SCADRIAL</h1>
+    <p>Momento actual : { new Date().toLocaleTimeString() }</p>
+    <p id="current-time">Momento actual real : { new Date().toLocaleTimeString() }</p>
+
+    <script>
+      const currentTime = document.getElementById('current-time')! as HTMLParagraphElement;
+      setInterval(() => {
+        currentTime.textContent = `Momento actual real : ${new Date().toLocaleTimeString()}`;
+      }, 1000);
+    </script>
+</MainLayout>
+
+<style>
+  h1 {
+    color: #ff0000;
+  }
+</style>

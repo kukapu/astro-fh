@@ -1,0 +1,20 @@
+---
+import CustomTitle from "../components/CustomTitle.astro";
+import MainLayout from "../layouts/MainLayout.astro";
+
+
+---
+
+<MainLayout title="Roshar">
+  <CustomTitle title="ROSHAR" />
+    <p>Momento actual : { new Date().toLocaleTimeString() }</p>
+    <p id="current-time">Momento actual real : { new Date().toLocaleTimeString() }</p>
+
+    <script>
+      const currentTime = document.getElementById('current-time')! as HTMLParagraphElement;
+      setInterval(() => {
+        currentTime.textContent = `Momento actual real : ${new Date().toLocaleTimeString()}`;
+      }, 1000);
+    </script>
+</MainLayout>
+
