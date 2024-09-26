@@ -1,0 +1,62 @@
+---
+import type { GetStaticPaths } from "astro";
+import MainLayout from "../../layouts/MainLayout.astro";
+import PokemonCard from "../../components/pokemons/PokemonCard.astro";
+import type { PokemonListResponse } from "../../interfaces/pokemon-list.response";
+
+export const getStaticPaths = (async () => {
+
+  const resp = await fetch('https://pokeapi.co/api/v2/pokemon?limit=151');
+  const { results } = await resp.json() as PokemonListResponse;
+
+  return results.map((pokemon) => ({
+    params: { name: pokemon.name },
+    props: { name: pokemon.name, url: pokemon.url },
+  }));
+
+  
+
+}) satisfies GetStaticPaths;
+
+const { url } = Astro.props;
+const { name } = Astro.params
+
+const id = url.split('/').at(-2);
+const audioSource = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${id}.ogg`;
+const imageSource = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+
+const pokemonPage: number = Math.ceil(Number(id) / 20);
+
+---
+
+<MainLayout 
+  title={`Pokémon - #${id} ${name}`}
+  description={`Información detallada sobre el Pokémon ${name}`}
+  image={imageSource}
+>
+  <section class="mt-10 max-w-4xl">
+    <div class="mb-4">
+      <a href={`/pokemons/${pokemonPage}`} class="btn btn-primary">Volver</a>
+    </div>
+
+    <div>
+      <div class=" flex flex-col items-center justify-center gap-4 px-4 py-8 mx-auto">
+        <PokemonCard name={name} url={url} isBig />
+        
+        <audio controls class="mt-4">
+          <source src={audioSource} type="audio/ogg" />
+          Tu navegador no soporta el elemento de audio.
+        </audio>
+      </div>
+    </div>
+  </section>
+</MainLayout>
+
+<style>
+  .btn {
+    @apply px-4 py-2 rounded-md text-white font-semibold transition-colors;
+  }
+  .btn-primary {
+    @apply bg-blue-500 hover:bg-blue-600;
+  }
+</style>
