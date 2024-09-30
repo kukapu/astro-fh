@@ -2,6 +2,7 @@
 import MainLayout from '../layouts/MainLayout.astro';
 import type { PokemonListResponse } from '../interfaces/pokemon-list.response';
 import PokemonCard from '../components/pokemons/PokemonCard.astro';
+import Title from '@components/common/Title.astro';
 
 const resp = await fetch('https://pokeapi.co/api/v2/pokemon');
 const data = await resp.json() as PokemonListResponse;
@@ -11,8 +12,9 @@ const title = 'Pokemos';
 
 <MainLayout title={title}>
 	<main class="mt-10">
-    <h1 class="text-3xl">Pokemons</h1>
-    <hr class="my-3" />
+    <!-- <h1 class="text-3xl">Pokemons</h1>
+    <hr class="my-3" /> -->
+    <Title>Pokemos</Title>
 
     <section
       aria-label="Pokemons"

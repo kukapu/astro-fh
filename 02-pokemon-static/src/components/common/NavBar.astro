@@ -1,0 +1,68 @@
+---
+const routes = [
+  {
+    name: 'Listado',
+    path: '/',
+  },
+  {
+    name: 'Paginado',
+    path: '/pokemons/1',
+  },
+  {
+    name: 'Favoritos',
+    path: '/favorites',
+  },
+  {
+    name: 'Islands',
+    path: '/islands',
+  },
+  {
+    name: 'Islands-P',
+    path: '/islands-persist',
+  },
+];
+
+const currentRoute = Astro.url.pathname;
+---
+
+<nav class="shadow bg-slate-800">
+  <div class="container flex items-center justify-center p-6 mx-auto text-gray-600 capitalize dark:text-gray-300">
+   <!--    {
+        routes.map((route) => (
+          <a 
+            href={route.path} 
+            class:list={
+              ["text-gray-800 dark:text-gray-200 mx-1.5 sm:mx-6", 
+                {
+                  "border-b-2 border-blue-500": route.path === currentRoute
+                }
+              ]
+            }
+          transition:name="page-transition"
+          >
+            {route.name}
+          </a>
+        ))
+      } -->
+      {
+        routes.map((route) => (
+          <div>
+            <a 
+              href={route.path} 
+              class={"text-gray-800 dark:text-gray-200 mx-1.5 sm:mx-6"}
+            >
+              {route.name}
+            </a>
+  
+            {
+              route.path === currentRoute ? (
+                <div class="border-b-2 border-blue-500 mx-4" transition:name="menu-line"/>
+              ) : (
+                <div class="border-b-2 border-transparent"/>
+              )
+            }
+          </div>
+        ))
+      }
+  </div>
+</nav>

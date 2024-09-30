@@ -3,6 +3,8 @@ import type { GetStaticPaths } from "astro";
 import MainLayout from "../../layouts/MainLayout.astro";
 import PokemonCard from "../../components/pokemons/PokemonCard.astro";
 import type { PokemonListResponse } from "../../interfaces/pokemon-list.response";
+import Title from "@components/common/Title.astro";
+import { Icon } from "astro-icon/components";
 
 export const getStaticPaths = (async () => {
 
@@ -35,9 +37,19 @@ const pokemonPage: number = Math.ceil(Number(id) / 20);
   image={imageSource}
 >
   <section class="mt-10 max-w-4xl">
-    <div class="mb-4">
-      <a href={`/pokemons/${pokemonPage}`} class="btn btn-primary">Volver</a>
+    <div class="mb-4 flex flex-row justify-center">
+      <div>
+        <button onclick="history.back()" class="btn btn-primary">History.back</button>
+        <a href={`/pokemons/${pokemonPage}`} class="btn btn-primary">Pagina correspondiente</a>
+        <Title>{name}</Title>
+      </div>
+      <button id="favorite-button" class="ml-4" data-name={name} data-id={id}>
+        <Icon data-outline name="heart-outline" color="red" size={50} />
+        <Icon data-full class="hidden" name="heart-full" color="red" size={50} />
+      </button>
     </div>
+
+  
 
     <div>
       <div class=" flex flex-col items-center justify-center gap-4 px-4 py-8 mx-auto">
@@ -52,6 +64,74 @@ const pokemonPage: number = Math.ceil(Number(id) / 20);
   </section>
 </MainLayout>
 
+<script>
+
+  // document.addEventListener('astro:before-preparation', () => {
+  //   console.log('before-preparation');
+  // });
+  // document.addEventListener('astro:after-preparation', () => {
+  //   console.log('after-preparation');
+  // });
+  // document.addEventListener('astro:before-swap', () => {
+  //   console.log('before-swap');
+  // });
+  // document.addEventListener('astro:after-swap', () => {
+  //   console.log('after-swap');
+  // });
+  // document.addEventListener('astro:page-load', () => {
+  //   console.log('page-load');
+  // });
+
+import type { FavoritePokemon } from "@interfaces/favorite-pokemons";
+
+  const handlePageLoad = () => {
+    let favoritePokemon: FavoritePokemon[] = JSON.parse(localStorage.getItem('favorite-pokemon') ?? '[]');
+    console.log(favoritePokemon);
+    const favoriteButton = document.querySelector('#favorite-button') as HTMLButtonElement;
+
+    if(!favoriteButton) return;
+  
+    const name = favoriteButton.getAttribute('data-name') ?? '';
+    const id = favoriteButton.dataset.id ?? '';
+
+    const heartOutline = favoriteButton.querySelector('[data-outline]') as HTMLElement;
+    const heartFull = favoriteButton.querySelector('[data-full]') as HTMLElement;
+
+    const isFavorite = favoritePokemon.some((pokemon) => pokemon.name === name);
+
+    if(isFavorite) {
+      heartOutline.classList.add('hidden');
+      heartFull.classList.remove('hidden');
+    }
+    
+    const toggleFavorite = () => {
+      const isFavorite = favoritePokemon.some((pokemon) => pokemon.name === name);
+      if(isFavorite) {
+        favoritePokemon = favoritePokemon.filter((pokemon) => pokemon.name !== name);
+      } else {
+        favoritePokemon.push({ name, id });
+      }
+
+      localStorage.setItem('favorite-pokemon', JSON.stringify(favoritePokemon));
+      heartOutline.classList.toggle('hidden');
+      heartFull.classList.toggle('hidden');
+    }
+    
+    favoriteButton.addEventListener('click', () => {
+      toggleFavorite()
+    });
+  }
+  
+  document.addEventListener('astro:page-load', () => {
+    handlePageLoad();
+  }, {})
+
+  
+</script>
+
+
+
+
 <style>
   .btn {
     @apply px-4 py-2 rounded-md text-white font-semibold transition-colors;
@@ -59,4 +139,10 @@ const pokemonPage: number = Math.ceil(Number(id) / 20);
   .btn-primary {
     @apply bg-blue-500 hover:bg-blue-600;
   }
+  
+  #favorite-button {
+    @apply hover:animate-pulse;
+  }
+
+  
 </style>
